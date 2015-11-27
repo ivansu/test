@@ -1,0 +1,628 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions
+    xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+    xmlns:wsp="http://www.w3.org/ns/ws-policy"
+    xmlns:wsp1_2="http://schemas.xmlsoap.org/ws/2004/09/policy"
+    xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:tns="urn:bars-web-school-info"
+    xmlns="http://schemas.xmlsoap.org/wsdl/"
+    targetNamespace="urn:bars-web-school-info"
+    name="SchoolInfoService">
+    <types>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:tns="urn:bars-web-school-info"
+  xmlns:xmime="http://www.w3.org/2005/05/xmlmime"
+  targetNamespace="urn:bars-web-school-info"
+  elementFormDefault="qualified">
+  <xsd:complexType name="Any">
+    <xsd:sequence>
+      <xsd:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:simpleType name="Inn">
+    <xsd:restriction base="xsd:normalizedString">
+      <xsd:length value="10"/>
+      <xsd:pattern value="[0-9]"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="AuthToken">
+    <xsd:restriction base="xsd:token">
+      <xsd:minLength value="1"/>
+      <xsd:maxLength value="255"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="String">
+    <xsd:restriction base="xsd:normalizedString">
+      <xsd:minLength value="1"/>
+      <xsd:maxLength value="255"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="Error">
+    <xsd:sequence>
+      <xsd:element name="errorCode" type="xsd:long"/>
+      <xsd:element name="errorMessage" type="tns:String"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="Employee">
+    <xsd:sequence>
+      <xsd:element name="sname" type="xsd:string"/>
+      <xsd:element name="fname" type="xsd:string"/>
+      <xsd:element name="mname" type="xsd:string"/>
+      <xsd:element name="position" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ResultArtefact">
+    <xsd:sequence>
+      <xsd:element name="documentId" type="xsd:string"/>
+      <xsd:element name="mimeType" type="xsd:string"/>
+      <xsd:element name="documentTypeCode" type="xsd:string"/>
+      <xsd:element name="documentName" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="text" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="Document">
+    <xsd:complexContent>
+      <xsd:extension base="tns:ResultArtefact">
+        <xsd:sequence>
+          <xsd:element name="content" type="xsd:base64Binary" minOccurs="0" xmime:expectedContentTypes="application/octet-stream"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="Url">
+    <xsd:complexContent>
+      <xsd:extension base="tns:ResultArtefact">
+        <xsd:sequence>
+          <xsd:element name="url" type="xsd:normalizedString" minOccurs="0"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="Documents">
+    <xsd:sequence>
+      <xsd:element name="document" type="tns:Document" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="Urls">
+    <xsd:sequence>
+      <xsd:element name="url" type="tns:Url" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="OrgExternal">
+    <xsd:sequence>
+      <xsd:element name="regionCode" type="xsd:string"/>
+      <xsd:element name="serviceOrgCode" type="xsd:string"/>
+      <xsd:element name="employee" type="tns:Employee" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="RequestHeader">
+    <xsd:sequence>
+      <xsd:element name="authToken" type="tns:AuthToken"/>
+      <xsd:element name="requestId" type="tns:String"/>
+      <xsd:element name="requestInitiatorCode" type="tns:OrgExternal"/>
+      <xsd:element name="orgRegistrator" type="tns:OrgExternal"/>
+      <xsd:element name="requestTypeCode" type="tns:String"/>
+      <xsd:element name="requestDate" type="xsd:dateTime"/>
+      <xsd:element name="documents" type="tns:Documents"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="EServiceHeader">
+    <xsd:sequence>
+      <xsd:element name="userId" type="xsd:long"/>
+      <xsd:element name="eserviceId" type="xsd:long"/>
+      <xsd:element name="reestrId" type="tns:String"/>
+      <xsd:element name="stateOrgId" type="xsd:long"/>
+      <xsd:element name="orderDate" type="xsd:date"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ResponseHeader">
+    <xsd:sequence>
+      <xsd:element name="authToken" type="tns:AuthToken"/>
+      <xsd:element name="responseDate" type="xsd:dateTime"/>
+      <xsd:element name="requestInitiatorCode" type="tns:OrgExternal"/>
+      <xsd:element name="requestIDRef" type="tns:String"/>
+      <xsd:element name="error" type="tns:Error"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="EServiceResult">
+    <xsd:sequence>
+      <xsd:element name="orderStatusId" type="tns:String"/>
+<xsd:element name="comment" type="tns:String"/>
+      <xsd:element name="extOrderNumber" type="tns:String" minOccurs="0"/>
+      <xsd:element name="urls" type="tns:Urls" minOccurs="0"/>
+      <xsd:element name="documents" type="tns:Documents" minOccurs="0"/>
+      <xsd:element name="XML" type="tns:Any" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+<!-- begin  kinds-->
+            <xsd:element name="listUnitKindsRequest" type="tns:listUnitKindsRequest">
+                <xsd:annotation><xsd:documentation>Запрос списка видов учреждений</xsd:documentation></xsd:annotation>
+            </xsd:element>
+
+            <xsd:element name="listUnitKindsResponse" type="tns:listUnitKindsResponse">
+                <xsd:annotation><xsd:documentation>Ответ на запрос списка видов учреждений</xsd:documentation></xsd:annotation>
+            </xsd:element>
+
+            <xsd:complexType name="listUnitKindsRequest">
+                <xsd:annotation><xsd:documentation>Параметры запроса списка видов учреждений</xsd:documentation></xsd:annotation>
+                <xsd:sequence>
+                    <xsd:element name="requestHeader" type="tns:RequestHeader" minOccurs="0" >
+                        <xsd:annotation><xsd:documentation>Заголовок запроса</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="eServiceHeader" type="tns:EServiceHeader" minOccurs="0" >
+                        <xsd:annotation><xsd:documentation>Заголовок запроса eServiceHeader</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="unitType" type="xsd:string">
+                        <xsd:annotation><xsd:documentation>Список идентификаторов объектов "Тип учреждения"</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="listUnitKindsResponse">
+                <xsd:annotation><xsd:documentation>Параметры ответа на запрос списка видов учреждений</xsd:documentation></xsd:annotation>
+                <xsd:sequence>
+                    <xsd:element name="responseHeader" type="tns:ResponseHeader" minOccurs="0" >
+                        <xsd:annotation><xsd:documentation>Заголовок ответа</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="eServiceResult" type="tns:EServiceResult" minOccurs="0" >
+                        <xsd:annotation><xsd:documentation>Заголовок ответа eServiceHeader</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="returns" type="tns:unitKind" minOccurs="0" maxOccurs="unbounded">
+                        <xsd:annotation><xsd:documentation>Список объектов "Вид учреждения"</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="unitKind">
+                <xsd:annotation><xsd:documentation>Описание объекта "Вид учреждения"</xsd:documentation></xsd:annotation>
+                <xsd:sequence>
+                    <xsd:element name="name" type="xsd:string">
+                        <xsd:annotation><xsd:documentation>Наименование вида</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="id" type="xsd:integer">
+                        <xsd:annotation><xsd:documentation>Идентификатор вида</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+<!-- end  kinds-->
+
+<!-- begin units-->
+            <xsd:element name="listUnitsRequest" type="tns:listUnitsRequest">
+                <xsd:annotation><xsd:documentation>Запрос списка учреждений</xsd:documentation></xsd:annotation>
+            </xsd:element>
+
+            <xsd:element name="listUnitsResponse" type="tns:listUnitsResponse">
+                <xsd:annotation><xsd:documentation>Ответ на запрос списка учреждений</xsd:documentation></xsd:annotation>
+            </xsd:element>
+
+            <xsd:complexType name="listUnitsRequest">
+                <xsd:annotation><xsd:documentation>Параметры запроса списка учреждений</xsd:documentation></xsd:annotation>
+                <xsd:sequence>
+                    <xsd:element name="requestHeader" type="tns:RequestHeader" minOccurs="0" >
+                        <xsd:annotation><xsd:documentation>Заголовок запроса</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="eServiceHeader" type="tns:EServiceHeader" minOccurs="0" >
+                        <xsd:annotation><xsd:documentation>Заголовок запроса eServiceHeader</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="types" type="xsd:string" minOccurs="0" maxOccurs="unbounded">
+                        <xsd:annotation><xsd:documentation>Список идентификаторов типов учреждений</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="kinds" type="xsd:string" minOccurs="0" maxOccurs="unbounded">
+                        <xsd:annotation><xsd:documentation>Список идентификаторов видов учреждений</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="areas" type="xsd:string" minOccurs="0" maxOccurs="unbounded">
+                        <xsd:annotation><xsd:documentation>Список идентификаторов территорий учреждений</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="listUnitsResponse">
+                <xsd:annotation><xsd:documentation>Параметры ответа на запрос списка учреждений</xsd:documentation></xsd:annotation>
+                <xsd:sequence>
+                    <xsd:element name="responseHeader" type="tns:ResponseHeader" minOccurs="0" >
+                        <xsd:annotation><xsd:documentation>Заголовок ответа</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="eServiceResult" type="tns:EServiceResult" minOccurs="0" >
+                        <xsd:annotation><xsd:documentation>Заголовок ответа eServiceHeader</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="returns" type="tns:unit" minOccurs="0" maxOccurs="unbounded">
+                        <xsd:annotation><xsd:documentation>Список объектов "Учреждение"</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="unit">
+                <xsd:annotation><xsd:documentation>Описание объекта "Учреждение"</xsd:documentation></xsd:annotation>
+                <xsd:sequence>
+                    <xsd:element name="name" type="xsd:string">
+                        <xsd:annotation><xsd:documentation>Наименование</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="id" type="xsd:integer">
+                        <xsd:annotation><xsd:documentation>Идентификатор</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+
+
+
+            <xsd:element name="unitsInfoRequest" type="tns:unitsInfoRequest">
+                <xsd:annotation><xsd:documentation>Запрос информации об учреждениях</xsd:documentation></xsd:annotation>
+            </xsd:element>
+
+            <xsd:element name="unitsInfoResponse" type="tns:unitsInfoResponse">
+                <xsd:annotation><xsd:documentation>Ответ на запрос информации об учреждениях</xsd:documentation></xsd:annotation>
+            </xsd:element>
+
+            <xsd:complexType name="unitsInfoRequest">
+                <xsd:annotation><xsd:documentation>Параметры запроса информации об учреждениях</xsd:documentation></xsd:annotation>
+                <xsd:sequence>
+                    <xsd:element name="requestHeader" type="tns:RequestHeader" minOccurs="0" >
+                        <xsd:annotation><xsd:documentation>Заголовок запроса</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="eServiceHeader" type="tns:EServiceHeader" minOccurs="0" >
+                        <xsd:annotation><xsd:documentation>Заголовок запроса eServiceHeader</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="units" type="xsd:string" minOccurs="0" maxOccurs="unbounded">
+                        <xsd:annotation><xsd:documentation>Список идентификаторов учреждений по которым необходима информация</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="unitsInfoResponse">
+                <xsd:annotation><xsd:documentation>Параметры ответа на запрос информации об учреждениях</xsd:documentation></xsd:annotation>
+                <xsd:sequence>
+                    <xsd:element name="responseHeader" type="tns:ResponseHeader" minOccurs="0" >
+                        <xsd:annotation><xsd:documentation>Заголовок ответа</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="eServiceResult" type="tns:EServiceResult" minOccurs="0" >
+                        <xsd:annotation><xsd:documentation>Заголовок ответа eServiceHeader</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="returns" type="tns:unitInfo" minOccurs="0" maxOccurs="unbounded">
+                        <xsd:annotation><xsd:documentation>Список объектов "Информация об учреждении"</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="unitInfo">
+                <xsd:annotation><xsd:documentation>Описание объекта "Информация об учреждении"</xsd:documentation></xsd:annotation>
+                <xsd:sequence>
+                    <xsd:element name="id" type="xsd:string">
+                        <xsd:annotation><xsd:documentation>Идентификатор</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="name" type="xsd:string">
+                        <xsd:annotation><xsd:documentation>Наименование</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="address" type="xsd:string">
+                        <xsd:annotation><xsd:documentation>Адрес</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="telephone" type="xsd:string">
+                        <xsd:annotation><xsd:documentation>Телефон</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="email" type="xsd:string">
+                        <xsd:annotation><xsd:documentation>Email</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="web_page" type="xsd:string">
+                        <xsd:annotation><xsd:documentation>Адрес сайта в интернете</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="director" type="xsd:string">
+                        <xsd:annotation><xsd:documentation>Директор</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+
+
+
+            <xsd:element name="unitDetailsRequest" type="tns:unitDetailsRequest">
+                <xsd:annotation><xsd:documentation>Запрос расширенной информации об учреждении</xsd:documentation></xsd:annotation>
+            </xsd:element>
+
+            <xsd:element name="unitDetailsResponse" type="tns:unitDetailsResponse">
+                <xsd:annotation><xsd:documentation>Ответ на запрос расширенной информации об учреждении</xsd:documentation></xsd:annotation>
+            </xsd:element>
+
+            <xsd:complexType name="unitDetailsRequest">
+                <xsd:annotation><xsd:documentation>Параметры запроса расширенной информации об учреждении</xsd:documentation></xsd:annotation>
+                <xsd:sequence>
+                    <xsd:element name="requestHeader" type="tns:RequestHeader" minOccurs="0" >
+                        <xsd:annotation><xsd:documentation>Заголовок запроса</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="eServiceHeader" type="tns:EServiceHeader" minOccurs="0" >
+                        <xsd:annotation><xsd:documentation>Заголовок запроса eServiceHeader</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="unit" type="xsd:string">
+                        <xsd:annotation><xsd:documentation>Идентификатор учреждения по которым необходима расширенная информация</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="format" type="xsd:string" minOccurs="0">
+                        <xsd:annotation><xsd:documentation>Формат возвращаемой информации (html, json, по умолчанию html)</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="unitDetailsResponse">
+                <xsd:annotation><xsd:documentation>Параметры ответа на запрос расширенной информации об учреждении</xsd:documentation></xsd:annotation>
+                <xsd:sequence>
+                    <xsd:element name="responseHeader" type="tns:ResponseHeader" minOccurs="0" >
+                        <xsd:annotation><xsd:documentation>Заголовок ответа</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="eServiceResult" type="tns:EServiceResult" minOccurs="0" >
+                        <xsd:annotation><xsd:documentation>Заголовок ответа eServiceHeader</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element minOccurs="0" nillable="true" name="returns" type="xsd:string">
+                        <xsd:annotation><xsd:documentation>Страница расширенной информации об учреждении</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+<!-- end  units-->
+<!-- begin types-->
+            <xsd:element name="listUnitTypesRequest" type="tns:listUnitTypesRequest">
+                <xsd:annotation><xsd:documentation>Запрос списка типов учреждений</xsd:documentation></xsd:annotation>
+            </xsd:element>
+
+            <xsd:element name="listUnitTypesResponse" type="tns:listUnitTypesResponse">
+                <xsd:annotation><xsd:documentation>Ответ на запрос списка типов учреждений</xsd:documentation></xsd:annotation>
+            </xsd:element>
+
+            <xsd:complexType name="listUnitTypesRequest">
+                <xsd:annotation><xsd:documentation>Параметры запроса списка типов учреждений</xsd:documentation></xsd:annotation>
+                <xsd:sequence>
+                    <xsd:element name="requestHeader" type="tns:RequestHeader" minOccurs="0" >
+                        <xsd:annotation><xsd:documentation>Заголовок запроса</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="eServiceHeader" type="tns:EServiceHeader" minOccurs="0" >
+                        <xsd:annotation><xsd:documentation>Заголовок запроса eServiceHeader</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="AreaId" type="xsd:string" minOccurs="0">
+                        <xsd:annotation><xsd:documentation>ОКАТО Района</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="listUnitTypesResponse">
+                <xsd:annotation><xsd:documentation>Параметры ответа на запрос списка типов учреждений</xsd:documentation></xsd:annotation>
+                <xsd:sequence>
+                    <xsd:element name="responseHeader" type="tns:ResponseHeader" minOccurs="0" >
+                        <xsd:annotation><xsd:documentation>Заголовок ответа</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="eServiceResult" type="tns:EServiceResult" minOccurs="0" >
+                        <xsd:annotation><xsd:documentation>Заголовок ответа eServiceHeader</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="returns" type="tns:unitType" minOccurs="0" maxOccurs="unbounded">
+                        <xsd:annotation><xsd:documentation>Список объектов "Тип учреждения"</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="unitType">
+                <xsd:annotation><xsd:documentation>Описание объекта "Тип учреждения"</xsd:documentation></xsd:annotation>
+                <xsd:sequence>
+                    <xsd:element name="name" type="xsd:string">
+                        <xsd:annotation><xsd:documentation>Наименование типа</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="id" type="xsd:integer">
+                        <xsd:annotation><xsd:documentation>Идентификатор типа</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+<!-- end  types-->
+<!-- begin territories-->
+            <xsd:element name="listTerritoriesRequest" type="tns:listTerritoriesRequest">
+                <xsd:annotation><xsd:documentation>Запрос списка территорий</xsd:documentation></xsd:annotation>
+            </xsd:element>
+
+            <xsd:element name="listTerritoriesResponse" type="tns:listTerritoriesResponse">
+                <xsd:annotation><xsd:documentation>Ответ на запрос списка территорий</xsd:documentation></xsd:annotation>
+            </xsd:element>
+
+            <xsd:complexType name="listTerritoriesRequest">
+                <xsd:annotation><xsd:documentation>Параметры запроса списка территорий</xsd:documentation></xsd:annotation>
+                <xsd:sequence>
+                    <xsd:element name="requestHeader" type="tns:RequestHeader" minOccurs="0" >
+                        <xsd:annotation><xsd:documentation>Заголовок запроса</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="eServiceHeader" type="tns:EServiceHeader" minOccurs="0" >
+                        <xsd:annotation><xsd:documentation>Заголовок запроса eServiceHeader</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="listTerritoriesResponse">
+                <xsd:annotation><xsd:documentation>Параметры ответа на запрос списка территорий</xsd:documentation></xsd:annotation>
+                <xsd:sequence>
+                    <xsd:element name="responseHeader" type="tns:ResponseHeader" minOccurs="0" >
+                        <xsd:annotation><xsd:documentation>Заголовок ответа</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="eServiceResult" type="tns:EServiceResult" minOccurs="0" >
+                        <xsd:annotation><xsd:documentation>Заголовок ответа eServiceHeader</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="returns" type="tns:Territory" minOccurs="0" maxOccurs="unbounded">
+                        <xsd:annotation><xsd:documentation>Список объектов "Территория"</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="Territory">
+                <xsd:annotation><xsd:documentation>Описание объекта "Территория"</xsd:documentation></xsd:annotation>
+                <xsd:sequence>
+                    <xsd:element name="name" type="xsd:string">
+                        <xsd:annotation><xsd:documentation>Наименование территории</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="id" type="xsd:integer">
+                        <xsd:annotation><xsd:documentation>Идентификатор территории</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="okato" type="xsd:string">
+                        <xsd:annotation><xsd:documentation>ОКАТО территории</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+
+<!-- end territories-->
+        </xsd:schema>
+    </types>
+<!-- begin  kinds-->
+    <message name="listUnitKindsRequest">
+        <part name="parameters" element="tns:listUnitKindsRequest"/>
+    </message>
+    <message name="listUnitKindsResponse">
+        <part name="parameters" element="tns:listUnitKindsResponse"/>
+    </message>
+    <portType name="listUnitKindsPortType">
+        <operation name="listUnitKindsOper">
+            <documentation>Операция получения списка видов учреждений</documentation>
+            <input wsam:Action="urn:listUnitKindsRequest" message="tns:listUnitKindsRequest"/>
+            <output wsam:Action="urn:listUnitKindsResponse" message="tns:listUnitKindsResponse"/>
+        </operation>
+    </portType>
+    <binding name="listUnitKindsPortBinding" type="tns:listUnitKindsPortType">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <operation name="listUnitKindsOper">
+            <soap:operation soapAction="urn:listUnitKindsOper"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+    </binding>
+<!-- end  kinds-->
+<!-- begin units-->
+    <message name="listUnitsRequest">
+        <part name="parameters" element="tns:listUnitsRequest"/>
+    </message>
+    <message name="listUnitsResponse">
+        <part name="parameters" element="tns:listUnitsResponse"/>
+    </message>
+    <message name="unitsInfoRequest">
+        <part name="parameters" element="tns:unitsInfoRequest"/>
+    </message>
+    <message name="unitsInfoResponse">
+        <part name="parameters" element="tns:unitsInfoResponse"/>
+    </message>
+    <message name="unitDetailsRequest">
+        <part name="parameters" element="tns:unitDetailsRequest"/>
+    </message>
+    <message name="unitDetailsResponse">
+        <part name="parameters" element="tns:unitDetailsResponse"/>
+    </message>
+    <portType name="listUnitsPortType">
+        <operation name="listUnitsOper">
+            <documentation>Операция получения списка учреждений</documentation>
+            <input wsam:Action="urn:listUnitsRequest" message="tns:listUnitsRequest"/>
+            <output wsam:Action="urn:listUnitsResponse" message="tns:listUnitsResponse"/>
+        </operation>
+        <operation name="unitsInfoOper">
+            <documentation>Операция получения информации об учреждениях</documentation>
+            <input wsam:Action="urn:unitsInfoRequest" message="tns:unitsInfoRequest"/>
+            <output wsam:Action="urn:unitsInfoResponse" message="tns:unitsInfoResponse"/>
+        </operation>
+        <operation name="unitDetailsOper">
+            <documentation>Операция получения информации об учреждениях</documentation>
+            <input wsam:Action="urn:unitDetailsRequest" message="tns:unitDetailsRequest"/>
+            <output wsam:Action="urn:unitDetailsResponse" message="tns:unitDetailsResponse"/>
+        </operation>
+    </portType>
+    <binding name="listUnitsPortBinding" type="tns:listUnitsPortType">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <operation name="listUnitsOper">
+            <soap:operation soapAction="urn:listUnitsOper"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="unitsInfoOper">
+            <soap:operation soapAction="urn:unitsInfoOper"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="unitDetailsOper">
+            <soap:operation soapAction="urn:unitDetailsOper"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+    </binding>
+<!-- end units-->
+<!-- begin types-->
+    <message name="listUnitTypesRequest">
+        <part name="parameters" element="tns:listUnitTypesRequest"/>
+    </message>
+    <message name="listUnitTypesResponse">
+        <part name="parameters" element="tns:listUnitTypesResponse"/>
+    </message>
+    <portType name="listUnitTypesPortType">
+        <operation name="listUnitTypesOper">
+            <documentation>Операция получения списка типов учреждений</documentation>
+            <input wsam:Action="urn:listUnitTypesRequest" message="tns:listUnitTypesRequest"/>
+            <output wsam:Action="urn:listUnitTypesResponse" message="tns:listUnitTypesResponse"/>
+        </operation>
+    </portType>
+    <binding name="listUnitTypesPortBinding" type="tns:listUnitTypesPortType">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <operation name="listUnitTypesOper">
+            <soap:operation soapAction="urn:listUnitTypesOper"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+    </binding>
+<!-- end types-->
+<!-- begin territories-->
+    <message name="listTerritoriesRequest">
+        <part name="parameters" element="tns:listTerritoriesRequest"/>
+    </message>
+    <message name="listTerritoriesResponse">
+        <part name="parameters" element="tns:listTerritoriesResponse"/>
+    </message>
+    <portType name="listTerritoriesPortType">
+        <operation name="listTerritoriesOper">
+            <documentation>Операция получения списка территорий</documentation>
+            <input wsam:Action="urn:listTerritoriesRequest" message="tns:listTerritoriesRequest"/>
+            <output wsam:Action="urn:listTerritoriesResponse" message="tns:listTerritoriesResponse"/>
+        </operation>
+    </portType>
+    <binding name="listTerritoriesPortBinding" type="tns:listTerritoriesPortType">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <operation name="listTerritoriesOper">
+            <soap:operation soapAction="urn:listTerritoriesOper"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+    </binding>
+<!-- end territories-->
+
+    <service name="SchoolInfoService">
+        <port name="listUnitKindsPort" binding="tns:listUnitKindsPortBinding">
+            <soap:address location="http://localhost:9080/stdws/unitkinds"/>
+        </port>
+        <port name="listUnitsPort" binding="tns:listUnitsPortBinding">
+            <soap:address location="http://localhost:9080/stdws/units"/>
+        </port>
+        <port name="listUnitTypesPort" binding="tns:listUnitTypesPortBinding">
+            <soap:address location="http://localhost:9080/stdws/unittypes"/>
+        </port>
+        <port name="listTerritoriesPort" binding="tns:listTerritoriesPortBinding">
+            <soap:address location="http://localhost:9080/stdws/unittypes"/>
+        </port>
+
+    </service>
+</definitions>

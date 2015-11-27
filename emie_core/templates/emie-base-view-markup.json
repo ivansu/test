@@ -1,0 +1,188 @@
+{
+    "avatar_url": "{% if school.0.ext_school.foto %}{{ current_site }}{{ school.0.ext_school.foto.url }}{% endif %}",
+    "name": "{{ school.0.name }}{% if school.0.ext_school.liquidating %} (Ликвидируется){% endif %}",
+    "f_address_full": "{{ school.0.f_address_full }}",
+    "telephone": "{{ school.0.telephone }}",
+    "fax": "{{ school.0.fax }}",
+    "email": "{{ school.0.email }}",
+    "site": "{% if school.0.ext_school.web_site %}{{ school.0.ext_school.web_site }}{% endif %}",
+    "director": "{{ school.0.ext_school.director.person.fullname }}",
+    {% if school.0.ext_school.ustav_vop %}
+    "ustav_vop": "1",
+    "ustav_file": "{{ current_site }}{{ school.0.ext_school.ustav_file.url }}",
+    "ustav_file_name": "{{school.0.ext_school.ustav_file}}",
+    {% endif %}
+    {% if norm_docs %}
+        "norm_docs": [
+            {% for norm_doc in norm_docs %}
+            {
+                "href": "{{ current_site }}{{ norm_doc.file.url }}",
+                "name": "{{ norm_doc.name }}"
+            }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ],
+    {% endif %}
+    {% if school.0.ext_school.license_vop %}
+    "license_info": "{{ school.0.ext_school.license_info }}",
+    "license_file": "{{ current_site }}{{ school.0.ext_school.license_file.url }}",
+    "license_file_name": "{{ school.0.ext_school.license_file }}",
+    {% endif %}
+    {% if school.0.ext_school.akkred_vop %}
+    "akkred_info": "{{ school.0.ext_school.akkred_info }}",
+    "akkred_file": "{{ current_site }}{{ school.0.ext_school.akkred_file.url }}",
+    "akkred_file_name": "{{ school.0.ext_school.akkred_file }}",
+    {% endif %}
+    {% if school.0.ext_school.language_vop %}
+    "language_vop": "1",
+    "language_info": "{{ school.0.ext_school.language_info }}",
+    {% endif %}
+    {% if school.0.ext_school.projected_rates_vop %}
+    "projected_rates_info": "{{ school.0.ext_school.projected_rates_info }}",
+    {% endif %}
+    {% if school.0.ext_school.availability_class_vop %}
+    "availability_class_vop": "1",
+    "availability_class_info": "{{ school.0.ext_school.availability_class_info }}",
+    {% endif %}
+    {% if school.0.ext_school.availability_group_vop %}
+        "availability_group_vop": "1",
+        "availability_group_info": "{{ school.0.ext_school.availability_group_info }}",
+    {% endif %}
+    {% if school.0.ext_school.availability_class_comp_vop %}
+        "availability_class_comp_info": "{{ school.0.ext_school.availability_class_comp_info }}",
+    {% endif %}
+    {% if school.0.ext_school.enrollment_in_ou_vop %}
+        "enrollment_in_ou_info": "{{ school.0.ext_school.enrollment_in_ou_info }}",
+    {% endif %}
+    {% if school.0.ext_school.enrollment_docs_in_ou_vop %}
+        "enrollment_docs_in_ou_vop": "1",
+        "enrollment_docs_in_ou_info": "{{ school.0.ext_school.enrollment_docs_in_ou_info }}",
+        {% if school.0.ext_school.enrollment_docs_in_ou_file %}
+        "enrollment_docs_in_ou_file": "{{ current_site }}{{ school.0.ext_school.enrollment_docs_in_ou_file.url }}",
+        {% endif %}
+        "enrollment_docs_in_ou_file_name": "{{ school.0.ext_school.enrollment_docs_in_ou_file }}",
+    {% endif %}
+    {% if school.0.ext_school.durations_vop %}
+        "durations_vop": "1",
+        "durations_info": "{{ school.0.ext_school.durations_info }}",
+    {% endif %}
+    {% if school.0.ext_school.mode_employment_vop %}
+        "mode_employment_vop": "1",
+        "mode_employment_info": "{{ school.0.ext_school.mode_employment_info }}",
+    {% endif %}
+    {% if school.0.ext_school.deduction_vop %}
+        "deduction_vop": "1",
+        "deduction_info": "{{ school.0.ext_school.deduction_info }}",
+    {% endif %}
+    {% if school.0.ext_school.additional_services_vop %}
+        "additional_services_info": "{{ school.0.ext_school.additional_services_info }}",
+    {% endif %}
+    {% if school.0.ext_school.rating_system_vop %}
+        "rating_system_vop": "1",
+        "rating_system_info": "{{ school.0.ext_school.rating_system_info }}",
+    {% endif %}
+    {% if school.0.ext_school.teaching_staff_ci_vop %}
+        "teaching_staff_ci_info": "{{ school.0.ext_school.teaching_staff_ci_info }}",
+    {% endif %}
+    {% if school.0.ext_school.category_children_ci_vop %}
+        "category_children_ci_info": "{{ school.0.ext_school.category_children_ci_info }}",
+    {% endif %}
+    {% if school.0.ext_school.category_children_ci_vop %}
+        "category_children_ci_info": "{{ school.0.ext_school.category_children_ci_info }}",
+    {% endif %}
+    {% if school.0.ext_school.implemented_programs_vop %}
+        "implemented_programs_vop": "1",
+        "implemented_programs": [{% for programm in school.0.implementedprograms_set.all %}{"name": "{{ programm.name }}", "document_type": "{{ programm.document_type_name }}", "program_direction": "{{ programm.program_direction_name }}", "program_language": "{{ programm.program_language_name }}", "implementation_date": "{{ programm.implementation_date }}", "implementation_period": "{{ programm.implementation_period_name }}"}{% if not forloop.last%},{% endif %}{% endfor %}],
+    {% endif %}
+
+    {% if school.0.ext_school.study_plans_vop %}
+        "study_plans_vop": "1",
+        "study_plans": {{ study_plans|safe }},
+    {% endif %}
+    {% if school.0.ext_school.work_programs_vop %}
+        "work_programs_vop": "1",
+        "work_programs": [{% for i in work_programs %}{"name": "{{ i.name }}", "file": "{{ i.file }}"}{% if not forloop.last %},{% endif %}{% endfor %}],
+    {% endif %}
+    {% if school.0.ext_school.year_graphs_vop %}
+        "year_graphs_vop": "1",
+        "year_graphs": [{% for i in year_graphs %}{"name": "{{ i.name }}", "file": "{{ i.file }}"}{% if not forloop.last %},{% endif %}{% endfor %}],
+    {% endif %}
+ 
+    {# ликвидация начало #}
+    {% if school.0.ext_school.liquidating %}
+        "liquidating": "1",
+	    {% if school.0.ext_school.liquid_phone %}
+	    	"liquid_phone": "{{ school.0.ext_school.liquid_phone }}",
+	    {% endif %}
+	    {% if school.0.ext_school.liquid_date %}
+	    	"liquid_date": "{{ school.0.ext_school.liquid_date_display }}",
+	    {% endif %}
+        "liquid_postanovlenie": "{{ current_site }}{{ school.0.ext_school.liquid_postanovlenie.url }}",
+        "liquid_postanovlenie_name": "{{school.0.ext_school.liquid_postanovlenie}}",
+        "liquid_eksp_ocenka": "{{ current_site }}{{ school.0.ext_school.liquid_eksp_ocenka.url }}",
+        "liquid_eksp_ocenka_name": "{{school.0.ext_school.liquid_eksp_ocenka}}",
+        "liquid_eksp_zakluchenie": "{{ current_site }}{{ school.0.ext_school.liquid_eksp_zakluchenie.url }}",
+        "liquid_eksp_zakluchenie_name": "{{school.0.ext_school.liquid_eksp_zakluchenie}}",
+	    {% if school.0.ext_school.liquid_mery_vop %}
+          "liquid_mery": "{{ current_site }}{{ school.0.ext_school.liquid_mery.url }}",
+          "liquid_mery_name": "{{school.0.ext_school.liquid_mery}}",
+	    {% endif %}
+        "liquid_rashody": "{{ current_site }}{{ school.0.ext_school.liquid_rashody.url }}",
+        "liquid_rashody_name": "{{school.0.ext_school.liquid_rashody }}",
+        "liquid_soglasovanie": "{{ current_site }}{{ school.0.ext_school.liquid_soglasovanie.url }}",
+        "liquid_soglasovanie_name": "{{school.0.ext_school.liquid_soglasovanie }}",
+        "schoolliquidator": [ 
+          {% for obj in school.0.schoolliquidator_set.all %}
+             {
+                
+                 "master": {% if obj.master%}true{% else %}false{% endif %},
+                 "fullname": "{{ obj.fullname }}", 
+                 "institution": "{{ obj.institution }}", 
+                 "job": "{{ obj.job }}"
+               
+             }
+             {% if not forloop.last%},{% endif %}
+          {% endfor %}], 
+    {% endif %}
+    {# ликвидация конец #}
+    {% if school.0.ext_school.class_count_vop %}
+    "class_count_vop": "1",
+    "class_count_info": "{{ school.0.ext_school.class_count_info }}",
+    {% endif %}
+    "administration": [{% for t in school.adm_teachers %}{"job": "{{ t.job_as_text}}", "fullname": "{{ t.person.fullname }}", "category": "{{ t.category }}", "img": "{{ current_site }}{% if t.profile %}{{ t.profile.avatar.url }}{% else %}/static/profiles/img/noavatar_big.png{% endif %}"}{% if not forloop.last %},{% endif %}{% endfor %}],
+    "teachers": [{% for t in school.ped_teachers %}{"job": "{{ t.job_as_text}}", "fullname": "{{ t.person.fullname }}", "category": "{{ t.category }}", "img": "{{ current_site }}{% if t.profile %}{{ t.profile.avatar.url }}{% else %}/static/profiles/img/noavatar_big.png{% endif %}"}{% if not forloop.last %},{% endif %}{% endfor %}],
+    {% if school.0.ext_school.vacancy_vop %}
+    "vacancy_vop": "1",
+    "vacancies": [{% for vacancy in school.0.vacancy_set.all %}
+        {
+            "vacancy": "{{ vacancy.job.name }}", 
+            "count": "{{ vacancy.num }}",
+            "weight": "{{ vacancy.weight }}",
+            "got_home": {{ vacancy.got_home|lower }},
+            "comment": "{{ vacancy.comment }}"
+        }
+        {% if not forloop.last %},{% endif %}{% endfor %}],
+    {% endif %}
+    "accreditations": [
+	    {% for obj in accreditations %}
+	         {
+	             "name": "{{ obj.name }}",
+	             "serial": "{{ obj.serial }}", 
+	             "number": "{{ obj.number }}", 
+	             "date_start": "{{ obj.format_date_start }}",
+	             "date_end": "{{ obj.format_date_end }}"
+	         }
+	         {% if not forloop.last %},{% endif %}
+	    {% endfor %}],
+    "licenses": [
+	    {% for obj in licenses %}
+	         {
+	             "name": "{{ obj.name }}",
+	             "serial": "{{ obj.serial }}", 
+	             "number": "{{ obj.number }}", 
+	             "date_start": "{{ obj.format_date_start }}",
+	             "date_end": "{{ obj.format_date_end }}"
+	         }
+	         {% if not forloop.last %},{% endif %}
+	    {% endfor %}],
+    "end": "1"
+}

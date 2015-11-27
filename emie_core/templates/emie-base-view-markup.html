@@ -1,0 +1,32 @@
+        <table class="standartTable box">
+            <tr>
+                <td class="boxTopLeft"></td>
+                <td class="boxTop"></td>
+                <td class="boxTopRight"></td>
+            </tr>
+            <tr>
+                <td class="boxLeft" ></td>
+                <td class="boxContent">
+                    <div class="padding">
+                        <img src="{% if school.0.ext_school.foto %}{{ current_site }}{{ school.0.ext_school.foto.url }}{% endif %}" class="left" />
+                        {% if not is_smev %}
+                        <p><strong>Наименование: </strong> {{school.0.name}}</p>
+                        <p><strong>Адрес фактический: </strong> {{school.0.f_address_full}}</p>
+                        <p><strong>Телефон/факс: </strong> {{school.0.telephone}}, {{school.0.fax}} </p>
+                        <p><strong>E-mail: </strong> <a href="mailto:{{school.0.email}}">{{school.0.email}}</a></p>
+                        <p><strong>Адрес сайта: </strong> <a href="http://{{school.0.ext_school.web_site}}"> {{school.0.ext_school.web_site}}</a></p>
+                        <p><strong>Руководитель: </strong>{{school.0.ext_school.director.person.fullname}}</p>
+                        {% endif %}
+                        <div class="clear"></div>
+                        {% block placeholder %}
+                        {% endblock %}
+                    </div>
+                </td>
+                <td class="boxRight"></td>
+            </tr>
+            <tr>
+                <td class="boxBotLeft"></td>
+                <td class="boxBot"></td>
+                <td class="boxBotRight"></td>
+            </tr>
+        </table>
