@@ -20,9 +20,25 @@ from web_edu.core.schedule_calls.models import StudyTime
 
 from helpers import replace_space_if_string
 
-class TestProxy(Proxy):
-    raions = None
-    schools = None
+class SchoolProxy(RecordProxy):
+    raion = None
+    school = None
+    school_type = None
+    def load(self, record):
+        EXCLUDED = ('index', 'lindex', 'indent', 'is_leaf', 'expanded', 'count')
+        for a in dir(record):
+            if (
+                not a.startswith('_')
+                and not callable(getattr(record, a))
+                and a not in  EXCLUDED
+                ):
+
+                setattr(self, a, getattr(record, a))
+    def calc(self):
+        if not self.school_type:
+            for code, name in SchoolProvider.territory.values():
+                setattr(self, '%s' % code, None)
+                setattr(self, '%s_branch' % code, None)
 
 class SchoolProvider(GroupingRecordDataProvider):
     request = None
