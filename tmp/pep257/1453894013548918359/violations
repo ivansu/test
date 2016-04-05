@@ -1,0 +1,27 @@
+./school.py:1 at module level:         D400: First line should end with a period (not '1')
+./school.py:23 in public class `SchoolProxy`:         D101: Missing docstring in public class
+./school.py:27 in public method `load`:         D102: Missing docstring in public method
+./school.py:37 in public method `calc`:         D102: Missing docstring in public method
+./school.py:43 in public class `SchoolProvider`:         D101: Missing docstring in public class
+./school.py:75 in public method `get_types`:         D302: Use u""" for Unicode docstrings
+./school.py:75 in public method `get_types`:         D400: First line should end with a period (not '\xb0')
+./school.py:75 in public method `get_types`:         D205: 1 blank line required between summary line and description (found 0)
+./school.py:164 in public method `__init__`:         D102: Missing docstring in public method
+./school.py:181 in public method `get_key`:         D302: Use u""" for Unicode docstrings
+./school.py:181 in public method `get_key`:         D400: First line should end with a period (not '\x8f')
+./school.py:181 in public method `get_key`:         D200: One-line docstring should fit on one line with quotes (found 3)
+./school.py:189 in public method `get_type_by_code`:         D102: Missing docstring in public method
+./school.py:194 in public method `create_data`:         D302: Use u""" for Unicode docstrings
+./school.py:194 in public method `create_data`:         D400: First line should end with a period (not '\xb8')
+./school.py:194 in public method `create_data`:         D200: One-line docstring should fit on one line with quotes (found 3)
+./school.py:231 in public method `get_only1012classes`:         D302: Use u""" for Unicode docstrings
+./school.py:231 in public method `get_only1012classes`:         D400: First line should end with a period (not '\x8b')
+./school.py:231 in public method `get_only1012classes`:         D200: One-line docstring should fit on one line with quotes (found 3)
+./school.py:248 in public method `get_daycare`:         D302: Use u""" for Unicode docstrings
+./school.py:248 in public method `get_daycare`:         D400: First line should end with a period (not '\xb0')
+./school.py:248 in public method `get_daycare`:         D200: One-line docstring should fit on one line with quotes (found 3)
+./school.py:261 in public method `get_23smen`:         D302: Use u""" for Unicode docstrings
+./school.py:261 in public method `get_23smen`:         D400: First line should end with a period (not '\x8b')
+./school.py:261 in public method `get_23smen`:         D200: One-line docstring should fit on one line with quotes (found 3)
+./school.py:280 in public class `SchoolOLAPWindow`:         D101: Missing docstring in public class
+./school.py:281 in public method `__init__`:         D102: Missing docstring in public method
